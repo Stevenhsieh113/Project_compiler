@@ -176,6 +176,28 @@ FUN-EXP->定義函式，FUN-CALL->呼叫函式
   (2) if type(test) != bool:：實作型別檢查。
   (3) return interpret_AST(node.children[1 if test else 2], env)：if test為真，執行children[1] (THEN_EXP), 否則執行children[2] (ELSE_EXP)
 
+## 系統架構：抽象語法樹 (AST Architecture)
+
+本直譯器採用 **抽象語法樹 (Abstract Syntax Tree, AST)** 作為核心資料結構。程式碼在執行前，會先被轉換為一棵樹狀結構，這使得直譯器能夠處理巢狀邏輯（Nested Logic）與遞歸呼叫。
+
+### 1. 節點設計 (Node Design)
+AST 由通用的 `Node` 類別構成。每個節點包含兩個核心屬性：
+- **`data`**: 儲存節點的類型（如 `plus`, `if_exp`）或值（如 `10`, `#t`）。
+- **`children`**: 一個列表，儲存該節點的所有子節點 (Sub-nodes)。這使得 AST 支援 N 元樹結構（N-ary Tree）。
+
+```python
+class Node:
+    def __init__(self, data, children):
+        self.data = data
+        self.children = children
+
+舉例：(+ 1 (* 2 3))
+[+] (plus)
+     /   \
+   [1]   [*] (multiply)
+        /   \
+      [2]   [3]
+
 
 ### 1. Syntax Valid
 輸入格式不符合預期輸入格式，將會輸出"syntax error的字樣，像是( + )這種少了相加的數字就會報syntax error。
