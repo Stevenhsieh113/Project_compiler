@@ -191,12 +191,59 @@ class Node:
         self.data = data
         self.children = children
 
+
 舉例：(+ 1 (* 2 3))
 [+] (plus)
      /   \
    [1]   [*] (multiply)
         /   \
       [2]   [3]
+
+## 遞歸與作用域機制 (Recursion & Scoping)
+
+本直譯器支援遞歸函式呼叫 (Recursive Function Call)。這是透過 **靜態作用域 (Static Scoping)** 與 **環境鏈 (Environment Chaining)** 來實現的。
+
+### 1. 運作原理 (Mechanism)
+當一個函式被呼叫時，直譯器會建立一個新的環境 (`Table`) 來儲存參數，並將這個新環境的 `outer` 指標指向函式定義時的環境。
+
+當執行 `(fact (- n 1))` 時：
+1. 直譯器在當前環境尋找 `fact`。
+2. 若找不到，則透過 `outer` 往上一層尋找。
+3. 最終在全域環境 (Global Environment) 找到 `fact` 的定義，並進行下一次呼叫。
+
+### 2. 遞歸呼叫堆疊圖 (Call Stack Visualization)
+以計算 `(fact 3)` 為例，執行時的環境堆疊如下：
+
+```text
+[ Global Environment ] <-----------------------+
+|  fact: <Function>  |                         |
++--------------------+                         |
+          ^                                    | (Look up 'fact')
+          | outer                              |
+[ Environment (n=3) ] -------------------------+
+|  Code: (* 3 (fact 2))                        |
++--------------------+                         |
+          ^                                    | (Look up 'fact')
+          | outer                              |
+[ Environment (n=2) ] -------------------------+
+|  Code: (* 2 (fact 1))
++--------------------+
+
+
+## 巢狀函式與閉包 (Nested Functions & Closures)
+
+本直譯器支援 **靜態作用域 (Static Scoping)**，這意味著內部函式可以存取外部函式的變數，即使外部函式已經執行完畢。這是透過 **閉包 (Closure)** 機制實現的。
+
+### 1. 運作原理 (Mechanism)
+當 `interpret_AST` 遇到 `fun` 定義時，它會建立一個 `Function` 物件，並將 **定義當下的環境 (Definition Environment)** 封裝在其中。
+
+```python
+class Function:
+    def __init__(self, args, body, env):
+        self.args = args
+        self.body = body
+        self.env = env  # [關鍵] 捕捉定義當下的環境 (Capture the environment)
+
 
 
 ### 1. Syntax Valid
