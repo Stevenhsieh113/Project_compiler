@@ -1,4 +1,3 @@
-# Project_compiler
 # Mini-LISP Interpreter
 
 這是一個使用純 Python 實作的 Mini-LISP 語言直譯器。本專案不依賴任何第三方語法分析套件（如 `lark-parser`），而是包含了一個手寫的遞歸下降解析器（Recursive Descent Parser），能夠讀取、解析並執行 Mini-LISP 程式碼。
@@ -36,8 +35,8 @@
 ### 2. 執行方式
 直譯器讀取標準輸入 (Standard Input, stdin) 的內容進行執行。
 
-#### 方式一：互動式輸入 (Interactive)
-在終端機直接執行 Python 腳本，輸入程式碼後按下 EOF 組合鍵結束（Windows: `Ctrl+Z` + Enter, Linux/Mac: `Ctrl+D`）。
+#### 方式：互動式輸入 (Interactive)
+在終端機直接執行 Python 腳本，cd進入該檔案資料夾，並輸入python main.py < xxxx.lsp。
 
 ```bash
 python main.py
