@@ -141,11 +141,31 @@ self.keyword_map = {
 基本運算: 包含加減乘除, mod，且允許多參數
 * Parser: 檢查是否符合至少兩個參數，有的話才能計算
 * Interpreter:
-  //注意!!: 因為題目規定數字範圍是signed integer: -2^31到2^31 -1，所以要加入to_int32()來設計
+  //注意!!: 因為題目規定數字範圍是signed integer: -2^31到2^31 -1，所以要加入to_int32()來設計，否則Python會自動處理overflow的情形
   Plus(+): 使用sum(a)來支援多參數相加
   Minus(-):
   Multiply: 使用reduce來支援多參數連成
+  溢位處理：所有數值運算都包裹了 to_int32(...)，這確保了行為符合題目隱含的 32-bit 運算要求。
 
+## LOGICAL_OP
+* Parser: 有在keyword_map對應and, or, not
+* Interpreter: AND(all), OR(any) NOT(not)來實作
+
+## DEF-STMT
+* Parser: define對應到def_stmt，確認符合架構才繼續
+* Interpreter: 當node.data == 'def_stmt'時:
+  (1) interpret_AST(node.children[1], env)：先計算出 EXP 的值。
+  (2) env[node.children[0]] = ...：將變數名（ID）與值存入當前的 env（符號表）中。
+
+## Function
+FUN-EXP->定義函式，FUN-CALL->呼叫函式
+* Parser: 當檢查到fun的時候，接下來要接左括號
+* Interpreter:
+
+## IF_EXP
+
+
+  
 
 ### 1. Syntax Valid
 輸入格式不符合預期輸入格式，將會輸出"syntax error的字樣，像是( + )這種少了相加的數字就會報syntax error。
