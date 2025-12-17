@@ -40,3 +40,37 @@
 
 ```bash
 python main.py
+
+## Lexer
+將長字串切割成一個一個Token，如果出現特殊符號會被擋下
+self.token_re = re.compile(
+    r'(?P<ws>\s+)|'                  # 忽略空白
+    r'(?P<comment>//.*)|'            # 忽略註解 (// 開頭)
+    r'(?P<lparen>\()|'               # 左括號
+    r'(?P<rparen>\))|'               # 右括號
+    r'(?P<bool>#t|#f)|'              # 布林值 (#t, #f)
+    r'(?P<number>-?\d+)|'            # 整數 (支援負數)
+    r'(?P<id>[a-z][a-z0-9-]*)'       # 識別字 (ID)
+    r'|(?P<op>[\+\-\*/><=]|\bmod\b)' # 運算子
+)
+
+keyword_map 
+self.keyword_map = {
+    # I/O
+    'print-num': 'print_num', 'print-bool': 'print_bool',
+    
+    # 數學運算
+    '+': 'plus', '-': 'minus', '*': 'multiply', '/': 'divide', 'mod': 'modulus',
+    '>': 'greater', '<': 'smaller', '=': 'equal',
+    
+    # 邏輯運算
+    'and': 'and_op', 'or': 'or_op', 'not': 'not_op',
+    
+    # 核心語法
+    'define': 'def_stmt', 'if': 'if_exp', 'fun': 'fun_exp'
+}
+
+### 1. Syntax Valid
+輸入格式不符合預期輸入格式，將會輸出"syntax error的字樣，像是( + )這種少了相加的數字就會報syntax error。
+
+### 2. 
