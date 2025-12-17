@@ -121,8 +121,30 @@ self.keyword_map = {
 
 
 
+## Program
+* Parser (parse 方法)： parse 函式中的 while idx < len(tokens): 迴圈負責處理這個 STMT+ 的定義。它會不斷呼叫 _parse_stmt 直到所有 Token 被讀取完畢，並將所有語句存入一個 Node('program', stmts) 節點。
+* Interpreter (interpret_AST 函式)： 當遇到 node.data == 'program' 時，程式碼使用列表推導式 [interpret_AST(c, env) for c in node.children] 依序執行每一個語句。
 
+## Print 
+主要分為印出數字和印出#t和#f
+* Parser: 定義'print-num': 'print_num' 和 'print-bool': 'print_bool'，在parser會先檢查是否有這兩個
+* Interpreter: self.check(int, a)確保型別正確，然後輸出答案
 
+## Expression(EXP)
+包含了布林值、數字、變數，或是運算子、函式呼叫、IF 表達式
+* Parser(_parse_stmt) : 判斷基礎型別(NUMBER, BOOL, ID)或是左括號，如果是左括號則進入複合表達式。
+* Interpreter:
+  (1) if isinstance(node, int): 專門處理數字
+  (2) if node =='#t'/ '#f': 處理布林值
+  (3) if isinstance(node, str): 處理變數
+## NUM_OP
+基本運算: 包含加減乘除, mod，且允許多參數
+* Parser: 檢查是否符合至少兩個參數，有的話才能計算
+* Interpreter:
+  //注意!!: 因為題目規定數字範圍是signed integer: -2^31到2^31 -1，所以要加入to_int32()來設計
+  Plus(+): 使用sum(a)來支援多參數相加
+  Minus(-):
+  Multiply: 使用reduce來支援多參數連成
 
 
 ### 1. Syntax Valid
