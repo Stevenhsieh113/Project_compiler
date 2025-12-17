@@ -41,45 +41,39 @@
 ```bash
 python main.py
 
-Lexer 設計說明
+# Lexer
 
-本專案的 Lexer（詞彙分析器） 負責將輸入的原始程式碼字串切割成一個一個的 Token，以便後續 Parser 進行語法分析。
-若輸入中出現不符合語法規則的字元或符號，Lexer 將無法成功匹配並視為錯誤。
+## 功能說明
+將長字串切割成一個一個 Token。  
+若出現未定義的特殊符號，Lexer 將無法匹配並回報錯誤。
 
-Token 規則（Regular Expressions）
+---
 
-Lexer 使用 Python 的 re 模組，透過以下正則表達式定義各類 Token：
+## Token Regular Expression
 
+```python
 self.token_re = re.compile(
-    r'(?P<ws>\s+)|'                  # 空白字元（忽略）
-    r'(?P<comment>//.*)|'            # 註解（// 開頭，忽略）
-    r'(?P<lparen>\()|'               # 左括號 '('
-    r'(?P<rparen>\))|'               # 右括號 ')'
+    r'(?P<ws>\s+)|'                  # 忽略空白
+    r'(?P<comment>//.*)|'            # 忽略註解 (// 開頭)
+    r'(?P<lparen>\()|'               # 左括號
+    r'(?P<rparen>\))|'               # 右括號
     r'(?P<bool>#t|#f)|'              # 布林值 (#t, #f)
-    r'(?P<number>-?\d+)|'            # 整數（支援負數）
-    r'(?P<id>[a-z][a-z0-9-]*)|'      # 識別字（identifier）
-    r'(?P<op>[\+\-\*/><=]|\bmod\b)'  # 運算子
+    r'(?P<number>-?\d+)|'            # 整數 (支援負數)
+    r'(?P<id>[a-z][a-z0-9-]*)|'      # 識別字 (ID)
+    r'|(?P<op>[\+\-\*/><=]|\bmod\b)' # 運算子
 )
+```
 
-Token 類型說明
-Token 類型	說明
-ws	空白字元（會被忽略）
-comment	註解（// 開頭，會被忽略）
-lparen	左括號 (
-rparen	右括號 )
-bool	布林常數 #t、#f
-number	整數（包含負數）
-id	識別字（小寫字母開頭，可包含數字與 -）
-op	運算子（+ - * / > < = mod）
-關鍵字對應表（Keyword Map）
+---
 
-Lexer 會先將字串辨識為 id 或 op，再透過 keyword_map 將其轉換為對應的語法 Token 類型。
+## Keyword Map
 
+```python
 self.keyword_map = {
     # I/O
     'print-num': 'print_num',
     'print-bool': 'print_bool',
-    
+
     # 數學運算
     '+': 'plus',
     '-': 'minus',
@@ -89,29 +83,48 @@ self.keyword_map = {
     '>': 'greater',
     '<': 'smaller',
     '=': 'equal',
-    
+
     # 邏輯運算
     'and': 'and_op',
     'or': 'or_op',
     'not': 'not_op',
-    
+
     # 核心語法
     'define': 'def_stmt',
     'if': 'if_exp',
     'fun': 'fun_exp'
 }
+```
 
-關鍵字分類
+---
 
-I/O 指令：print-num, print-bool
+## Token 類型
 
-數學運算子：+, -, *, /, mod
+| Token | 說明 |
+|------|------|
+| ws | 空白（忽略） |
+| comment | 註解（忽略） |
+| lparen | `(` |
+| rparen | `)` |
+| bool | `#t`, `#f` |
+| number | 整數 |
+| id | 識別字 |
+| op | 運算子 |
 
-比較運算子：>, <, =
+---
 
-邏輯運算：and, or, not
+## 設計重點
 
-核心語法結構：define, if, fun
+- 空白與註解在 Lexer 階段即被忽略
+- 非法字元無法被 token 化
+- Keyword 與 identifier 分離，利於 Parser 設計
+
+
+
+
+
+
+
 ### 1. Syntax Valid
 輸入格式不符合預期輸入格式，將會輸出"syntax error的字樣，像是( + )這種少了相加的數字就會報syntax error。
 
