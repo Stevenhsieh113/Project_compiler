@@ -160,12 +160,22 @@ self.keyword_map = {
 ## Function
 FUN-EXP->定義函式，FUN-CALL->呼叫函式
 * Parser: 當檢查到fun的時候，接下來要接左括號
+  (1) 當遇到 fun 時，檢查下一項是否為 LPAREN（參數列）。
+  (2) 呼叫 _parse_fun_ids 解析 (x y z) 形式的參數名。
+  (3) 解析 body 並將參數與本體包裝成 Node('fun_exp', ...)。
+  (4) 若非關鍵字開頭（如 ((fun ...) ...) 或 (foo ...)），則包裝成 Node('fun_call', ...)。
 * Interpreter:
-
+   定義函式 (fun_exp)： 程式碼 return Function(args, body_node, env) 建立了 閉包 (Closure)。關鍵在於它把 定義當下的 env 存了起來 (self.env = env)。
+  (1) func = interpret_AST(node.children[0], env)：取得函式物件
+  (2) params = [...]：計算所有參數的值。
+  (3) func(*params)：觸發 Function.__call__。
 ## IF_EXP
+* Parser: if 對應 if_exp。檢查 n != 3 確保剛好有三個參數（條件、True路徑、False路徑）。
+* Interpreter: 當node.data == 'if_exp'時:
+  (1) test = interpret_AST(node.children[0], env)：先計算條件。
+  (2) if type(test) != bool:：實作型別檢查。
+  (3) return interpret_AST(node.children[1 if test else 2], env)：if test為真，執行children[1] (THEN_EXP), 否則執行children[2] (ELSE_EXP)
 
-
-  
 
 ### 1. Syntax Valid
 輸入格式不符合預期輸入格式，將會輸出"syntax error的字樣，像是( + )這種少了相加的數字就會報syntax error。
