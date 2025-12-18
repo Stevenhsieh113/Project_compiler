@@ -30,16 +30,16 @@
 ## 安裝與執行 (Usage)
 
 ### 1. 準備程式碼
-確保目錄中包含主程式檔案（例如 `main.py`）。
+確保目錄中包含主程式檔案（例如 `test_big.py`）。
 
 ### 2. 執行方式
 直譯器讀取標準輸入 (Standard Input, stdin) 的內容進行執行。
 
 #### 方式：互動式輸入 (Interactive)
-在終端機直接執行 Python 腳本，cd進入該檔案資料夾，並輸入python main.py < xxxx.lsp。
+在終端機直接執行 Python 腳本，cd進入該檔案資料夾，並輸入python test_big.py < xxxx.lsp。
 
 ```bash
-python main.py
+python test_big.py
 
 # Lexer
 
