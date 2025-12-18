@@ -245,8 +245,3 @@ class Function:
         self.env = env  # [關鍵] 捕捉定義當下的環境 (Capture the environment)
 
 
-
-### 1. Syntax Valid
-輸入格式不符合預期輸入格式，將會輸出"syntax error的字樣，像是( + )這種少了相加的數字就會報syntax error。
-
-### 2. 
